@@ -23,7 +23,7 @@ export function Paragraph({
   children: ReactNode;
   className?: string;
 }) {
-  return <p className={cx("max-w-3xl text-[1.05rem] leading-8 text-ink-700", className)}>{children}</p>;
+  return <p className={cx("max-w-3xl text-[1.05rem] leading-8 text-slate-700", className)}>{children}</p>;
 }
 
 export function Highlight({
@@ -36,15 +36,15 @@ export function Highlight({
   children: ReactNode;
 }) {
   const styles: Record<HighlightTone, string> = {
-    amber: "border-amber-300/80 bg-amber-50/85 text-ink-800",
-    blue: "border-accent-200/80 bg-accent-50/85 text-ink-800",
-    ink: "border-ink-200 bg-white text-ink-800"
+    amber: "border-amber-300/80 bg-amber-50/85 text-slate-800 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-slate-200",
+    blue: "border-accent-200/80 bg-accent-50/85 text-slate-800 dark:border-sky-400/30 dark:bg-sky-400/10 dark:text-slate-200",
+    ink: "border-slate-200 bg-white text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
   };
 
   return (
     <aside className={cx("rounded-lg border p-5 shadow-sm", styles[tone])}>
       <p className="section-title">{title}</p>
-      <div className="mt-3 space-y-3 text-[0.98rem] leading-7 text-ink-700">{children}</div>
+      <div className="mt-3 space-y-3 text-[0.98rem] leading-7 text-slate-700 dark:text-slate-300">{children}</div>
     </aside>
   );
 }
@@ -81,8 +81,8 @@ function Box({
   h,
   title,
   subtitle,
-  fill = "#ffffff",
-  stroke = "#d8cdbd"
+  fill = "var(--diagram-box)",
+  stroke = "var(--diagram-stroke)"
 }: {
   x: number;
   y: number;
@@ -169,15 +169,15 @@ export function PatternDiagram({
       <svg viewBox="0 0 760 360" className="h-auto w-full">
         <defs>
           <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-            <path d="M 0 0 L 12 6 L 0 12 z" fill="#9f8f7a" />
+            <path d="M 0 0 L 12 6 L 0 12 z" fill="var(--diagram-arrow)" />
           </marker>
         </defs>
 
-        <rect x="10" y="10" width="740" height="340" rx="12" fill="url(#bgGrad)" stroke="#cbd5e1" />
+        <rect x="10" y="10" width="740" height="340" rx="12" fill="url(#bgGrad)" stroke="var(--diagram-border)" />
         <defs>
           <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#f8fafc" />
+            <stop offset="0%" stopColor="var(--diagram-grad-from)" />
+            <stop offset="100%" stopColor="var(--diagram-grad-to)" />
           </linearGradient>
         </defs>
 
@@ -190,10 +190,10 @@ export function PatternDiagram({
 
         {kind === "singleton" ? (
           <>
-            <Box x={320} y={120} w={120} h={66} title="One instance" subtitle="shared access" fill="#eef5ff" stroke="#b8d1ff" />
-            <Box x={80} y={120} w={92} h={56} title="Client A" fill="#fff" />
-            <Box x={80} y={220} w={92} h={56} title="Client B" fill="#fff" />
-            <Box x={600} y={170} w={92} h={56} title="Client C" fill="#fff" />
+            <Box x={320} y={120} w={120} h={66} title="One instance" subtitle="shared access" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
+            <Box x={80} y={120} w={92} h={56} title="Client A" />
+            <Box x={80} y={220} w={92} h={56} title="Client B" />
+            <Box x={600} y={170} w={92} h={56} title="Client C" />
             <Arrow x1={172} y1={148} x2={320} y2={150} stroke={accent} />
             <Arrow x1={172} y1={248} x2={320} y2={162} stroke={accent} />
             <Arrow x1={600} y1={198} x2={440} y2={155} stroke={accent} />
@@ -205,7 +205,7 @@ export function PatternDiagram({
             <Box x={50} y={145} w={96} h={54} title="step 1" subtitle="plan" />
             <Box x={185} y={145} w={96} h={54} title="step 2" subtitle="assemble" />
             <Box x={320} y={145} w={96} h={54} title="step 3" subtitle="shape" />
-            <Box x={500} y={120} w={140} h={108} title="product" subtitle="built object" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={500} y={120} w={140} h={108} title="product" subtitle="built object" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Arrow x1={146} y1={172} x2={185} y2={172} stroke={warm} />
             <Arrow x1={281} y1={172} x2={320} y2={172} stroke={warm} />
             <Arrow x1={416} y1={172} x2={500} y2={172} stroke={warm} />
@@ -215,7 +215,7 @@ export function PatternDiagram({
         {kind === "factory" ? (
           <>
             <Box x={74} y={138} w={122} h={70} title="Caller" subtitle="asks for product" />
-            <Box x={278} y={118} w={164} h={114} title="Factory" subtitle="chooses concrete type" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={278} y={118} w={164} h={114} title="Factory" subtitle="chooses concrete type" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={526} y={86} w={134} h={72} title="Product A" />
             <Box x={526} y={182} w={134} h={72} title="Product B" />
             <Arrow x1={196} y1={173} x2={278} y2={175} stroke={accent} />
@@ -227,7 +227,7 @@ export function PatternDiagram({
         {kind === "abstract-factory" ? (
           <>
             <Box x={70} y={145} w={120} h={70} title="client" subtitle="asks for family" />
-            <Box x={286} y={80} w={180} h={88} title="theme factory" subtitle="consistent family" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={286} y={80} w={180} h={88} title="theme factory" subtitle="consistent family" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={532} y={55} w={140} h={62} title="Button" />
             <Box x={532} y={134} w={140} h={62} title="Card" />
             <Box x={532} y={213} w={140} h={62} title="Input" />
@@ -240,7 +240,7 @@ export function PatternDiagram({
 
         {kind === "prototype" ? (
           <>
-            <Box x={102} y={128} w={130} h={88} title="prototype" subtitle="known-good exemplar" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={102} y={128} w={130} h={88} title="prototype" subtitle="known-good exemplar" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={322} y={128} w={120} h={88} title="clone()" subtitle="copy state" />
             <Box x={526} y={86} w={124} h={62} title="copy A" />
             <Box x={526} y={178} w={124} h={62} title="copy B" />
@@ -256,7 +256,7 @@ export function PatternDiagram({
         {kind === "adapter" ? (
           <>
             <Box x={74} y={138} w={132} h={82} title="old API" subtitle="legacy shape" />
-            <Box x={286} y={118} w={150} h={122} title="adapter" subtitle="translates" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={286} y={118} w={150} h={122} title="adapter" subtitle="translates" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={520} y={138} w={164} h={82} title="new API" subtitle="client-facing" />
             <Arrow x1={206} y1={179} x2={286} y2={179} stroke={accent} />
             <Arrow x1={436} y1={179} x2={520} y2={179} stroke={warm} />
@@ -265,7 +265,7 @@ export function PatternDiagram({
 
         {kind === "composite" ? (
           <>
-            <Box x={314} y={38} w={132} h={54} title="root" subtitle="composite" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={314} y={38} w={132} h={54} title="root" subtitle="composite" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={136} y={142} w={116} h={54} title="branch" />
             <Box x={314} y={142} w={132} h={54} title="branch" />
             <Box x={520} y={142} w={116} h={54} title="branch" />
@@ -288,8 +288,8 @@ export function PatternDiagram({
         {kind === "decorator" ? (
           <>
             <Box x={102} y={120} w={110} h={84} title="core" subtitle="base behavior" />
-            <Box x={250} y={96} w={126} h={132} title="decorator" subtitle="extra behavior" fill="#eef5ff" stroke="#b8d1ff" />
-            <Box x={408} y={76} w={126} h={172} title="decorator" subtitle="more behavior" fill="#fff8eb" stroke="#f7c96c" />
+            <Box x={250} y={96} w={126} h={132} title="decorator" subtitle="extra behavior" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
+            <Box x={408} y={76} w={126} h={172} title="decorator" subtitle="more behavior" fill="var(--diagram-box-warm)" stroke="var(--diagram-stroke-warm)" />
             <Box x={566} y={108} w={110} h={108} title="result" subtitle="same API" />
             <Arrow x1={212} y1={162} x2={250} y2={162} stroke={accent} />
             <Arrow x1={376} y1={162} x2={408} y2={162} stroke={warm} />
@@ -300,7 +300,7 @@ export function PatternDiagram({
         {kind === "proxy" ? (
           <>
             <Box x={96} y={128} w={118} h={88} title="client" />
-            <Box x={276} y={104} w={134} h={136} title="proxy" subtitle="gatekeeper" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={276} y={104} w={134} h={136} title="proxy" subtitle="gatekeeper" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={486} y={128} w={180} h={88} title="real subject" subtitle="lazy / secure / cached" />
             <Arrow x1={214} y1={172} x2={276} y2={172} stroke={accent} />
             <Arrow x1={410} y1={172} x2={486} y2={172} stroke={warm} />
@@ -309,7 +309,7 @@ export function PatternDiagram({
 
         {kind === "flyweight" ? (
           <>
-            <Box x={54} y={128} w={140} h={82} title="shared core" subtitle="intrinsic state" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={54} y={128} w={140} h={82} title="shared core" subtitle="intrinsic state" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={272} y={62} w={100} h={48} title="context 1" />
             <Box x={272} y={122} w={100} h={48} title="context 2" />
             <Box x={272} y={182} w={100} h={48} title="context 3" />
@@ -331,7 +331,7 @@ export function PatternDiagram({
             <Box x={178} y={148} w={96} h={56} title="h2" />
             <Box x={306} y={148} w={96} h={56} title="h3" />
             <Box x={434} y={148} w={96} h={56} title="h4" />
-            <Box x={594} y={118} w={104} h={116} title="handled" subtitle="first match wins" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={594} y={118} w={104} h={116} title="handled" subtitle="first match wins" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Arrow x1={146} y1={176} x2={178} y2={176} stroke={accent} />
             <Arrow x1={274} y1={176} x2={306} y2={176} stroke={accent} />
             <Arrow x1={402} y1={176} x2={434} y2={176} stroke={accent} />
@@ -341,7 +341,7 @@ export function PatternDiagram({
 
         {kind === "state" ? (
           <>
-            <Box x={308} y={124} w={144} h={82} title="context" subtitle="delegates to state" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={308} y={124} w={144} h={82} title="context" subtitle="delegates to state" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={118} y={72} w={100} h={52} title="draft" />
             <Box x={532} y={72} w={100} h={52} title="published" />
             <Box x={586} y={220} w={100} h={52} title="archived" />
@@ -357,7 +357,7 @@ export function PatternDiagram({
 
         {kind === "observer" ? (
           <>
-            <Box x={314} y={118} w={132} h={88} title="subject" subtitle="publishes updates" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={314} y={118} w={132} h={88} title="subject" subtitle="publishes updates" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={78} y={62} w={110} h={52} title="observer 1" />
             <Box x={578} y={62} w={110} h={52} title="observer 2" />
             <Box x={70} y={236} w={118} h={52} title="observer 3" />
@@ -373,9 +373,9 @@ export function PatternDiagram({
           <>
             <Box x={80} y={136} w={132} h={76} title="context" subtitle="fixed flow" />
             <Box x={282} y={84} w={110} h={56} title="strategy A" />
-            <Box x={282} y={150} w={110} h={56} title="strategy B" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={282} y={150} w={110} h={56} title="strategy B" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={282} y={216} w={110} h={56} title="strategy C" />
-            <Box x={476} y={130} w={194} h={80} title="result" subtitle="same interface, different algorithm" fill="#fff8eb" stroke="#f7c96c" />
+            <Box x={476} y={130} w={194} h={80} title="result" subtitle="same interface, different algorithm" fill="var(--diagram-box-warm)" stroke="var(--diagram-stroke-warm)" />
             <Arrow x1={212} y1={174} x2={282} y2={112} stroke={accent} />
             <Arrow x1={212} y1={174} x2={282} y2={178} stroke={accent} />
             <Arrow x1={212} y1={174} x2={282} y2={244} stroke={accent} />
@@ -387,9 +387,9 @@ export function PatternDiagram({
 
         {kind === "template" ? (
           <>
-            <Box x={92} y={106} w={126} h={128} title="skeleton" subtitle="fixed workflow" fill="#eef5ff" stroke="#b8d1ff" />
+            <Box x={92} y={106} w={126} h={128} title="skeleton" subtitle="fixed workflow" fill="var(--diagram-box-muted)" stroke="var(--diagram-stroke-accent)" />
             <Box x={274} y={76} w={98} h={52} title="step 1" />
-            <Box x={274} y={146} w={98} h={52} title="hook" fill="#fff8eb" stroke="#f7c96c" />
+            <Box x={274} y={146} w={98} h={52} title="hook" fill="var(--diagram-box-warm)" stroke="var(--diagram-stroke-warm)" />
             <Box x={274} y={216} w={98} h={52} title="step 2" />
             <Box x={430} y={106} w={124} h={128} title="subclass" subtitle="fills blanks" />
             <Box x={610} y={128} w={104} h={84} title="result" subtitle="same outline" />
