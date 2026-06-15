@@ -42,8 +42,8 @@ export function Highlight({
   };
 
   return (
-    <aside className={cx("rounded-3xl border p-5 shadow-paper", styles[tone])}>
-      <p className="text-sm font-semibold uppercase tracking-[0.24em] text-ink-500">{title}</p>
+    <aside className={cx("rounded-lg border p-5 shadow-sm", styles[tone])}>
+      <p className="section-title">{title}</p>
       <div className="mt-3 space-y-3 text-[0.98rem] leading-7 text-ink-700">{children}</div>
     </aside>
   );
@@ -55,15 +55,15 @@ export function DataTable({
   rows: Array<{ label: string; value: string }>;
 }) {
   return (
-    <div className="overflow-hidden rounded-3xl border border-ink-200 bg-white shadow-paper">
+    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <table className="w-full border-separate border-spacing-0 text-left">
         <tbody>
           {rows.map((row, index) => (
-            <tr key={row.label} className={index > 0 ? "border-t border-ink-200" : ""}>
-              <th className="w-1/3 border-b border-ink-200 bg-paper-50 px-5 py-4 text-sm font-semibold text-ink-500">
+            <tr key={row.label} className={index > 0 ? "border-t border-slate-200" : ""}>
+              <th className="w-1/3 border-b border-slate-200 bg-slate-50 px-5 py-4 text-sm font-semibold text-slate-600">
                 {row.label}
               </th>
-              <td className="border-b border-ink-200 px-5 py-4 text-[0.98rem] leading-7 text-ink-800">
+              <td className="border-b border-slate-200 px-5 py-4 text-[0.98rem] leading-7 text-slate-800">
                 {row.value}
               </td>
             </tr>
@@ -95,7 +95,7 @@ function Box({
 }) {
   return (
     <g>
-      <rect x={x} y={y} width={w} height={h} rx="18" fill={fill} stroke={stroke} strokeWidth="2" />
+      <rect x={x} y={y} width={w} height={h} rx="8" fill={fill} stroke={stroke} strokeWidth="2" />
       <text x={x + w / 2} y={y + 28} textAnchor="middle" className="fill-ink-900 text-[14px] font-semibold">
         {title}
       </text>
@@ -161,11 +161,11 @@ export function PatternDiagram({
   title: string;
 }) {
   const accent = "#2277f2";
-  const warm = "#e38b12";
-  const ink = "#584c3f";
+  const warm = "#f59e0b";
+  const ink = "#475569";
 
   return (
-    <div className="rounded-[32px] border border-ink-200 bg-gradient-to-br from-white to-paper-50 p-4 shadow-paper">
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <svg viewBox="0 0 760 360" className="h-auto w-full">
         <defs>
           <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
@@ -173,11 +173,11 @@ export function PatternDiagram({
           </marker>
         </defs>
 
-        <rect x="10" y="10" width="740" height="340" rx="28" fill="url(#bgGrad)" stroke="#eadcc9" />
+        <rect x="10" y="10" width="740" height="340" rx="12" fill="url(#bgGrad)" stroke="#cbd5e1" />
         <defs>
           <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#fffdf8" />
-            <stop offset="100%" stopColor="#f8efe0" />
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f8fafc" />
           </linearGradient>
         </defs>
 

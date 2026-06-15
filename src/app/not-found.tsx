@@ -7,12 +7,12 @@ export default function NotFoundPage() {
       <Container className="max-w-3xl">
         <div className="soft-card p-8">
           <p className="accent-chip">404</p>
-          <h1 className="mt-5 text-4xl font-semibold">That note does not exist yet.</h1>
-          <p className="mt-4 text-base leading-7 text-ink-600">
+          <h1 className="mt-5 text-4xl font-bold text-slate-950">That note does not exist yet.</h1>
+          <p className="mt-4 text-base leading-7 text-slate-600">
             This site is still growing. If you meant one of the design patterns, go back to
             the index and choose a topic to study.
           </p>
-          <Link href="/design-patterns/" className="mt-6 inline-flex rounded-full bg-ink-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-ink-800">
+          <Link href="/design-patterns/" className="mt-6 inline-flex rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700">
             Open design patterns
           </Link>
         </div>
