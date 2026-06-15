@@ -18,6 +18,9 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout
@@ -27,6 +30,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
       - name: Install dependencies
         run: npm install
@@ -40,4 +46,5 @@ jobs:
           path: ./out
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
