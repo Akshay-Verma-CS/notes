@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  Container,
-  DataTable,
-  Highlight,
-  Paragraph,
-  PatternDiagram
-} from "@/components/study";
+import type { HldSection } from "@/lib/hld-notes";
 import { getHldNoteBySlug, getHldNoteIndex, hldNotes } from "@/lib/hld-notes";
 
 export const dynamicParams = false;
@@ -25,9 +20,7 @@ export function generateMetadata({
     const note = getHldNoteBySlug(resolved.slug);
 
     if (!note) {
-      return {
-        title: "Note not found"
-      };
+      return { title: "Note not found" };
     }
 
     return {
@@ -35,6 +28,111 @@ export function generateMetadata({
       description: note.summary
     };
   });
+}
+
+function SectionTable({ section }: { section: HldSection }) {
+  if (!section.table) {
+    return null;
+  }
+
+  return (
+    <div className="article-table-wrap">
+      <table className="article-table">
+        <thead>
+          <tr>
+            {section.table.headers.map((header) => (
+              <th key={header}>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {section.table.rows.map((row) => (
+            <tr key={row.join("-")}>
+              {row.map((cell, index) => (
+                <td key={`${cell}-${index}`}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function CodeBlock({ children }: { children: string }) {
+  return (
+    <pre className="article-code">
+      <code>{children}</code>
+    </pre>
+  );
+}
+
+function ArticleSection({
+  section,
+  number
+}: {
+  section: HldSection;
+  number: number;
+}) {
+  return (
+    <section id={section.id} className="article-section scroll-mt-24">
+      <div className="article-section-heading">
+        <span className="article-section-number">{String(number).padStart(2, "0")}</span>
+        <div>
+          <p className="article-eyebrow">{section.eyebrow}</p>
+          <h2>{section.title}</h2>
+        </div>
+      </div>
+
+      <p className="article-lead">{section.lead}</p>
+
+      {section.paragraphs?.map((paragraph) => (
+        <p key={paragraph} className="article-copy">
+          {paragraph}
+        </p>
+      ))}
+
+      {section.bullets ? (
+        <ul className="article-list">
+          {section.bullets.map((bullet) => (
+            <li key={bullet}>{bullet}</li>
+          ))}
+        </ul>
+      ) : null}
+
+      {section.code ? <CodeBlock>{section.code}</CodeBlock> : null}
+
+      <SectionTable section={section} />
+
+      {section.subsections ? (
+        <div className="article-subsection-grid">
+          {section.subsections.map((subsection) => (
+            <section key={subsection.title} className="article-panel">
+              <h3>{subsection.title}</h3>
+              {subsection.paragraphs?.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+              {subsection.bullets ? (
+                <ul>
+                  {subsection.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+              ) : null}
+              {subsection.code ? <CodeBlock>{subsection.code}</CodeBlock> : null}
+            </section>
+          ))}
+        </div>
+      ) : null}
+
+      {section.callout ? (
+        <aside className={`article-callout article-callout-${section.callout.tone}`}>
+          <p className="article-callout-title">{section.callout.title}</p>
+          <p>{section.callout.body}</p>
+        </aside>
+      ) : null}
+    </section>
+  );
 }
 
 export default async function HldNoteDetailPage({
@@ -54,220 +152,191 @@ export default async function HldNoteDetailPage({
   const next = index < hldNotes.length - 1 ? hldNotes[index + 1] : null;
 
   return (
-    <div className="pb-16">
-      <Container className="grid gap-8 py-8 xl:grid-cols-[260px_minmax(0,1fr)_300px]">
-        <aside className="hidden border-r border-slate-200 pr-5 xl:block">
-          <p className="section-title">HLD notes</p>
-          <nav className="mt-3 space-y-5">
-            <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">
-                {note.category}
-              </p>
-              <div className="space-y-1">
+    <div className="hld-workspace pb-16">
+      <div className="w-full px-4 py-6 sm:px-6 xl:px-8 2xl:px-10">
+        <div className="mx-auto grid max-w-[1800px] gap-7 xl:grid-cols-[230px_minmax(0,1fr)_250px] 2xl:grid-cols-[260px_minmax(0,1fr)_280px]">
+          <aside className="hidden xl:block">
+            <div className="sticky top-24">
+              <Link href="/hld-notes/" className="article-back-link">
+                <span aria-hidden="true">←</span>
+                All HLD notes
+              </Link>
+              <p className="mt-8 section-title">Library</p>
+              <nav className="mt-3 space-y-2" aria-label="HLD note library">
                 {hldNotes.map((item) => (
                   <Link
                     key={item.slug}
                     href={`/hld-notes/${item.slug}/`}
-                    className={`prep-link ${item.slug === note.slug ? "prep-link-active" : ""}`}
+                    className={`article-library-link ${
+                      item.slug === note.slug ? "article-library-link-active" : ""
+                    }`}
+                    aria-current={item.slug === note.slug ? "page" : undefined}
                   >
+                    <span className="article-library-category">{item.category}</span>
                     <span>{item.title}</span>
                   </Link>
                 ))}
+              </nav>
+
+              <div className="article-sidebar-note">
+                <p className="section-title">Reading lens</p>
+                <p>
+                  Follow the invariant, failure mode, and operational signal. Architecture
+                  is the trade-off between all three.
+                </p>
               </div>
             </div>
-          </nav>
-        </aside>
+          </aside>
 
-        <article className="min-w-0">
-          <nav className="text-sm text-slate-500">
-            <Link href="/" className="hover:text-emerald-700">
-              Home
-            </Link>
-            <span className="mx-2 text-slate-300">/</span>
-            <Link href="/hld-notes/" className="hover:text-emerald-700">
-              HLD Notes
-            </Link>
-            <span className="mx-2 text-slate-300">/</span>
-            <span className="text-slate-700">{note.title}</span>
-          </nav>
+          <article className="min-w-0">
+            <nav className="article-breadcrumb" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              <span>/</span>
+              <Link href="/hld-notes/">HLD Notes</Link>
+              <span>/</span>
+              <span aria-current="page">{note.title}</span>
+            </nav>
 
-          <section className="mt-6 grid gap-6">
-            <div className="space-y-6">
-              <div className="flex flex-wrap gap-2">
-                <span className="accent-chip">{note.category}</span>
-                <span className="chip">Senior-level</span>
+            <header className="article-hero">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="article-topic-chip">{note.category}</span>
+                <span className="article-meta-chip">{note.level}</span>
+                <span className="article-meta-chip">{note.readingTime}</span>
               </div>
-              <h1 className="max-w-4xl text-4xl font-bold leading-tight text-slate-950 sm:text-5xl">
-                {note.title}
-              </h1>
-              <Paragraph className="text-lg text-slate-600">{note.summary}</Paragraph>
+              <h1>{note.title}</h1>
+              <p>{note.summary}</p>
+            </header>
+
+            <details className="article-mobile-toc xl:hidden">
+              <summary>On this note</summary>
+              <nav>
+                {note.sections.map((section) => (
+                  <a key={section.id} href={`#${section.id}`}>
+                    {section.title}
+                  </a>
+                ))}
+              </nav>
+            </details>
+
+            <section className="article-facts" aria-label="Quick facts">
+              {note.quickFacts.map((fact) => (
+                <div key={fact.label}>
+                  <p>{fact.label}</p>
+                  <strong>{fact.value}</strong>
+                </div>
+              ))}
+            </section>
+
+            {note.image ? (
+              <figure className="article-figure">
+                <div className="article-figure-canvas">
+                  <Image
+                    src={note.image.src}
+                    width={2000}
+                    height={1167}
+                    sizes="(min-width: 1536px) 1000px, (min-width: 1280px) 720px, 100vw"
+                    alt={note.image.alt}
+                    priority
+                  />
+                </div>
+                <figcaption>
+                  <span>{note.image.caption}</span>
+                  <span>
+                    Diagram:{" "}
+                    <a href={note.image.sourceUrl} target="_blank" rel="noreferrer">
+                      {note.image.sourceLabel}
+                    </a>{" "}
+                    ·{" "}
+                    <a href={note.image.licenseUrl} target="_blank" rel="noreferrer">
+                      {note.image.licenseLabel}
+                    </a>
+                  </span>
+                </figcaption>
+              </figure>
+            ) : null}
+
+            <div className="article-body">
+              {note.sections.map((section, sectionIndex) => (
+                <ArticleSection
+                  key={section.id}
+                  section={section}
+                  number={sectionIndex + 1}
+                />
+              ))}
             </div>
-            <PatternDiagram kind={note.diagram} title={note.title} />
-          </section>
 
-          <div className="mt-10">
-            <div className="space-y-10">
-              <section id="quick-facts" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">Quick facts</p>
-                <DataTable rows={note.quickFacts} />
-              </section>
+            <section className="article-review">
+              <p className="article-eyebrow">Revision / Ask yourself</p>
+              <h2>Senior-level review questions</h2>
+              <ol>
+                {note.studyQuestions.map((question, questionIndex) => (
+                  <li key={question}>
+                    <span>{String(questionIndex + 1).padStart(2, "0")}</span>
+                    {question}
+                  </li>
+                ))}
+              </ol>
+            </section>
 
-              <section id="why-it-exists" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">Why it exists</p>
-                <Paragraph>{note.problem}</Paragraph>
-              </section>
+            <section className="article-sources">
+              <p className="article-eyebrow">References</p>
+              <h2>Sources and further reading</h2>
+              <div>
+                {note.sources.map((source) => (
+                  <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
+                    <span>{source.label}</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+            </section>
 
-              <section id="mental-model" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">Mental model</p>
-                <Highlight tone="blue" title="How to remember it">
-                  <p>{note.mentalModel}</p>
-                  <p>{note.recognize}</p>
-                </Highlight>
-              </section>
-
-              <section id="when-to-use-it" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">When to use it</p>
-                <div className="grid gap-4 md:grid-cols-3">
-                  {note.useWhen.map((item) => (
-                    <div key={item} className="soft-card p-5">
-                      <p className="text-sm leading-7 text-slate-700">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section id="trade-offs" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">Trade-offs</p>
-                <Highlight tone="amber" title="Costs to watch">
-                  <ul className="list-disc space-y-2 pl-5">
-                    {note.tradeoffs.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </Highlight>
-              </section>
-
-              <section id="reduce-contention" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">Reduce contention</p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {note.reduceContention.map((item) => (
-                    <div key={item} className="soft-card p-5">
-                      <p className="text-sm leading-7 text-slate-700">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section id="common-misconceptions" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">Common misconceptions</p>
-                <div className="grid gap-4 md:grid-cols-3">
-                  {note.misconceptions.map((item) => (
-                    <div key={item} className="soft-card p-5">
-                      <p className="text-sm leading-7 text-slate-700">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section id="example" className="space-y-4 scroll-mt-24">
-                <p className="accent-chip">Example</p>
-                <Paragraph>{note.example}</Paragraph>
-              </section>
-
-              <section className="space-y-4">
-                <p className="accent-chip">Study questions</p>
-                <Highlight tone="ink" title="Ask yourself">
-                  <ul className="list-disc space-y-2 pl-5">
-                    {note.studyQuestions.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </Highlight>
-              </section>
-            </div>
-          </div>
-
-          <section className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-6">
-            <div className="flex flex-wrap gap-3">
+            <nav className="article-pagination" aria-label="Adjacent notes">
               {previous ? (
-                <Link
-                  href={`/hld-notes/${previous.slug}/`}
-                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 transition hover:border-emerald-300 hover:text-emerald-700"
-                >
-                  Previous: {previous.title}
+                <Link href={`/hld-notes/${previous.slug}/`}>
+                  <span>Previous note</span>
+                  <strong>{previous.title}</strong>
                 </Link>
-              ) : null}
+              ) : (
+                <span />
+              )}
               {next ? (
-                <Link
-                  href={`/hld-notes/${next.slug}/`}
-                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 transition hover:border-emerald-300 hover:text-emerald-700"
-                >
-                  Next: {next.title}
+                <Link href={`/hld-notes/${next.slug}/`}>
+                  <span>Next note</span>
+                  <strong>{next.title}</strong>
                 </Link>
-              ) : null}
+              ) : (
+                <Link href="/hld-notes/">
+                  <span>Back to</span>
+                  <strong>All HLD notes</strong>
+                </Link>
+              )}
+            </nav>
+          </article>
+
+          <aside className="hidden xl:block">
+            <div className="sticky top-24">
+              <p className="section-title">On this note</p>
+              <nav className="article-toc" aria-label="Table of contents">
+                {note.sections.map((section, sectionIndex) => (
+                  <a key={section.id} href={`#${section.id}`}>
+                    <span>{String(sectionIndex + 1).padStart(2, "0")}</span>
+                    {section.title}
+                  </a>
+                ))}
+              </nav>
+
+              <div className="article-sidebar-note article-sidebar-note-accent">
+                <p className="section-title">Interview mode</p>
+                <p>
+                  State the workload and invariant first. Then compare failure semantics,
+                  scaling behavior, and operational cost.
+                </p>
+              </div>
             </div>
-            <Link href="/hld-notes/" className="text-sm font-bold text-emerald-700 hover:text-emerald-800">
-              Back to all HLD notes
-            </Link>
-          </section>
-        </article>
-
-        <aside className="hidden space-y-6 xl:sticky xl:top-24 xl:block xl:h-fit">
-          <div className="soft-card p-5">
-            <p className="section-title">On this note</p>
-            <ul className="mt-4 space-y-1 text-sm font-medium text-slate-600">
-              <li>
-                <a href="#quick-facts" className="prep-link">
-                  Quick facts
-                </a>
-              </li>
-              <li>
-                <a href="#why-it-exists" className="prep-link">
-                  Why it exists
-                </a>
-              </li>
-              <li>
-                <a href="#mental-model" className="prep-link">
-                  Mental model
-                </a>
-              </li>
-              <li>
-                <a href="#when-to-use-it" className="prep-link">
-                  When to use it
-                </a>
-              </li>
-              <li>
-                <a href="#trade-offs" className="prep-link">
-                  Trade-offs
-                </a>
-              </li>
-              <li>
-                <a href="#reduce-contention" className="prep-link">
-                  Reduce contention
-                </a>
-              </li>
-              <li>
-                <a href="#common-misconceptions" className="prep-link">
-                  Misconceptions
-                </a>
-              </li>
-              <li>
-                <a href="#example" className="prep-link">
-                  Example
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <Highlight tone="blue" title="Senior signal">
-            <p>
-              Good concurrency design is usually about not sharing the hot thing at all.
-              If you can shard, version, or make the write idempotent, you often need
-              less locking than you first think.
-            </p>
-          </Highlight>
-        </aside>
-      </Container>
+          </aside>
+        </div>
+      </div>
     </div>
   );
 }

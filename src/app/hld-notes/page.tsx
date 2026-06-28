@@ -43,7 +43,7 @@ export default function HldNotesIndexPage() {
           <div>
             <div className="flex flex-wrap gap-2">
               <span className="accent-chip">High-level design</span>
-              <span className="chip">{noteCount} note</span>
+              <span className="chip">{noteCount} notes</span>
               <span className="chip">Concurrency / storage / caching</span>
             </div>
             <h1 className="mt-5 max-w-4xl text-4xl font-bold leading-tight text-slate-950 sm:text-5xl">
@@ -83,7 +83,7 @@ export default function HldNotesIndexPage() {
                       <Link
                         key={note.slug}
                         href={`/hld-notes/${note.slug}/`}
-                        className="grid gap-3 px-5 py-5 transition hover:bg-emerald-50 md:grid-cols-[minmax(0,1fr)_140px_120px]"
+                        className="grid gap-3 px-5 py-5 transition hover:bg-emerald-50 md:grid-cols-[minmax(0,1fr)_130px_110px_100px]"
                       >
                         <span>
                           <span className="block text-base font-bold text-slate-950">
@@ -95,6 +95,9 @@ export default function HldNotesIndexPage() {
                         </span>
                         <span className="text-sm font-semibold text-slate-600">
                           {note.category}
+                        </span>
+                        <span className="text-sm font-semibold text-slate-500">
+                          {note.readingTime}
                         </span>
                         <span className="text-sm font-bold text-emerald-700">Read note</span>
                       </Link>
