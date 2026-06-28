@@ -65,10 +65,10 @@ export const roadmapTracks: RoadmapTrack[] = [
   },
   {
     title: "HLD Notes",
-    status: "Planned",
+    status: "Live",
     description:
-      "System design, scaling, failure modes, and architecture decision logs.",
-    href: "#"
+      "Systems thinking, contention, scaling, and production trade-offs for senior-level prep.",
+    href: "/hld-notes/"
   }
 ];
 

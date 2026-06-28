@@ -6,6 +6,7 @@ This folder now contains a standalone Next.js study site built for deep learning
 
 - A landing page for the study roadmap
 - A design-patterns section with original notes and diagrams
+- A high-level design section with a senior-level locking/contention note
 - Reusable content primitives for paragraphs, highlight blocks, tables, and SVG diagrams
 - Static-export friendly routing so the site can be hosted as static files later
 
@@ -28,5 +29,4 @@ The app uses port `3001` so it can run alongside your other Next project if need
 
 - DSA
 - LLD
-- HLD
-
+- More HLD notes

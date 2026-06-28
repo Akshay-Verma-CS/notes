@@ -157,7 +157,10 @@ export function PatternDiagram({
     | "state"
     | "observer"
     | "strategy"
-    | "template";
+    | "template"
+    | "locking"
+    | "sharding"
+    | "redis";
   title: string;
 }) {
   const accent = "#2277f2";
@@ -398,6 +401,119 @@ export function PatternDiagram({
             <Arrow x1={218} y1={170} x2={274} y2={242} stroke={accent} />
             <Arrow x1={372} y1={170} x2={430} y2={170} stroke={warm} />
             <Arrow x1={554} y1={170} x2={610} y2={170} stroke={warm} />
+          </>
+        ) : null}
+
+        {kind === "locking" ? (
+          <>
+            <Box x={48} y={68} w={118} h={48} title="worker A" />
+            <Box x={48} y={138} w={118} h={48} title="worker B" />
+            <Box x={48} y={208} w={118} h={48} title="worker C" />
+            <Box
+              x={250}
+              y={90}
+              w={138}
+              h={88}
+              title="lock queue"
+              subtitle="wait or back off"
+              fill="var(--diagram-box-muted)"
+              stroke="var(--diagram-stroke-accent)"
+            />
+            <Box
+              x={440}
+              y={78}
+              w={138}
+              h={112}
+              title="critical section"
+              subtitle="one holder at a time"
+              fill="var(--diagram-box-warm)"
+              stroke="var(--diagram-stroke-warm)"
+            />
+            <Box x={620} y={112} w={98} h={76} title="shared state" subtitle="hot resource" />
+            <Arrow x1={166} y1={92} x2={250} y2={118} stroke={accent} />
+            <Arrow x1={166} y1={162} x2={250} y2={132} stroke={accent} />
+            <Arrow x1={166} y1={232} x2={250} y2={146} stroke={accent} />
+            <Arrow x1={388} y1={134} x2={440} y2={134} stroke={warm} />
+            <Arrow x1={578} y1={134} x2={620} y2={150} stroke={ink} />
+            <text x="250" y="236" className="fill-ink-500 text-[12px]">
+              shorter critical section means less waiting
+            </text>
+          </>
+        ) : null}
+
+        {kind === "sharding" ? (
+          <>
+            <Box
+              x={50}
+              y={120}
+              w={120}
+              h={92}
+              title="router"
+              subtitle="chooses shard"
+              fill="var(--diagram-box-muted)"
+              stroke="var(--diagram-stroke-accent)"
+            />
+            <Box x={254} y={72} w={118} h={62} title="shard A" />
+            <Box x={254} y={150} w={118} h={62} title="shard B" />
+            <Box x={254} y={228} w={118} h={62} title="shard C" />
+            <Box x={446} y={72} w={118} h={62} title="shard D" />
+            <Box x={446} y={150} w={118} h={62} title="shard E" />
+            <Box x={446} y={228} w={118} h={62} title="shard F" />
+            <Box
+              x={628}
+              y={120}
+              w={92}
+              h={92}
+              title="hot key"
+              subtitle="one tenant"
+              fill="var(--diagram-box-warm)"
+              stroke="var(--diagram-stroke-warm)"
+            />
+            <Arrow x1={170} y1={166} x2={254} y2={103} stroke={accent} />
+            <Arrow x1={170} y1={166} x2={254} y2={181} stroke={accent} />
+            <Arrow x1={170} y1={166} x2={254} y2={259} stroke={accent} />
+            <Arrow x1={170} y1={166} x2={446} y2={103} stroke={accent} />
+            <Arrow x1={170} y1={166} x2={446} y2={181} stroke={accent} />
+            <Arrow x1={170} y1={166} x2={446} y2={259} stroke={accent} />
+            <Arrow x1={566} y1={166} x2={628} y2={166} stroke={warm} />
+            <text x="254" y="318" className="fill-ink-500 text-[12px]">
+              good shard keys spread load; bad ones create hot spots
+            </text>
+          </>
+        ) : null}
+
+        {kind === "redis" ? (
+          <>
+            <Box
+              x={50}
+              y={132}
+              w={122}
+              h={76}
+              title="clients"
+              subtitle="app traffic"
+            />
+            <Box
+              x={256}
+              y={110}
+              w={150}
+              h={120}
+              title="redis primary"
+              subtitle="in-memory command engine"
+              fill="var(--diagram-box-muted)"
+              stroke="var(--diagram-stroke-accent)"
+            />
+            <Box x={458} y={74} w={122} h={62} title="replica 1" />
+            <Box x={458} y={150} w={122} h={62} title="replica 2" />
+            <Box x={458} y={226} w={122} h={62} title="replica 3" />
+            <Box x={636} y={120} w={78} h={86} title="AOF / RDB" subtitle="persistence" />
+            <Arrow x1={172} y1={170} x2={256} y2={170} stroke={accent} />
+            <Arrow x1={406} y1={140} x2={458} y2={105} stroke={warm} />
+            <Arrow x1={406} y1={170} x2={458} y2={181} stroke={warm} />
+            <Arrow x1={406} y1={200} x2={458} y2={257} stroke={warm} />
+            <Arrow x1={406} y1={170} x2={636} y2={163} stroke={ink} />
+            <text x="256" y="260" className="fill-ink-500 text-[12px]">
+              fast because the hot path stays in memory
+            </text>
           </>
         ) : null}
       </svg>

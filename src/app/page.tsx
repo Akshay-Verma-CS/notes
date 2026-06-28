@@ -20,7 +20,7 @@ const highYield = [
 const prepStats = [
   { label: "Live notes", value: designPatterns.length.toString() },
   { label: "Active track", value: "Design Patterns" },
-  { label: "Next tracks", value: "DSA / LLD / HLD" }
+  { label: "Next tracks", value: "HLD / DSA / LLD" }
 ];
 
 export default function HomePage() {
@@ -71,8 +71,8 @@ export default function HomePage() {
                   Prep notes organized like a learning portal.
                 </h1>
                 <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600">
-                  Start with design patterns, then expand into DSA, low-level design,
-                  and high-level design. Each note is shaped for depth: problem,
+                  Start with design patterns, then expand into HLD, DSA, and low-level design.
+                  Each note is shaped for depth: problem,
                   mental model, use cases, trade-offs, misconceptions, and recall prompts.
                 </p>
 
